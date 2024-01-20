@@ -5,7 +5,7 @@ import { Button } from './components/ui/button';
 
 function App() {
   return (
-    <div className="App">
+    <div className="flex mx-auto items-center justify-center p-4">
       <Button>Click me</Button>
     </div>
   );
