@@ -1,47 +1,41 @@
-import React from 'react'
-import LoadingButton from "@mui/lab/LoadingButton";
-import { Button } from '@/components/ui/button';
-// import { Button } from "@mui/material";
+import { Button } from '../../components/ui/button';
+import React from 'react';
+// import { Button } from '@/components/ui';
 
 interface AppButtonProps {
-    children: React.ReactNode; // For React elements or components
-    type?: string;
-    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void; // Function type for click events
-    loading?: boolean;
-    sx?: React.CSSProperties; // Style properties
-    [key: string]: any; // For the rest of the props
+  children: React.ReactNode;
+  type?: string;
+  onClick: () => void;
+  loading?: boolean;
+  style?: React.CSSProperties;
 }
 
+const AppButton: React.FC<AppButtonProps> = ({ children, type = "", onClick, loading, style, ...rest }) => {
+  console.log(children)
+  // Custom style for loading state
+  const loadingStyle: React.CSSProperties = {
+    ...style,
+    opacity: loading ? 0.5 : 1,
+    cursor: loading ? 'not-allowed' : 'pointer',
+  };
 
-const AppButton: React.FC<AppButtonProps> = ({
-  children,
-  type = "",
-  onClick,
-  loading,
-  sx,
-  ...rest
-}) => {
-  console.log('hello fahim', typeof(children))
   switch (type) {
     case "loadingButton":
       return (
-        <LoadingButton
-          size="small"
-          onClick={onClick}
-          loading={loading}
-          sx={{ textTransform: "capitalize", ...sx }}
+        <Button 
+          onClick={loading ? undefined : onClick} 
+          style={loadingStyle} 
           {...rest}
           disabled={loading}
         >
-          {children}
-        </LoadingButton>
+          {loading ? 'Loading...' : children}
+        </Button>
       );
     default:
       return (
-        <Button
-          onClick={onClick}
-          size="small"
-          sx={{ textTransform: "capitalize", ...sx }}
+        <Button 
+          onClick={onClick} 
+          style={style} 
           {...rest}
         >
           {children}
