@@ -1,42 +1,37 @@
 import { Button } from '../../components/ui/button';
 import React from 'react';
-// import { Button } from '@/components/ui';
+import { ReloadIcon } from "@radix-ui/react-icons"
 
-interface AppButtonProps {
-  children: React.ReactNode;
-  type?: string;
-  onClick: () => void;
-  loading?: boolean;
-  style?: React.CSSProperties;
+type AppButtonProps ={
+  children: React.ReactNode,
+  type: string,
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => any,
+  loading?: boolean,
+  style?: React.CSSProperties,
 }
 
-const AppButton: React.FC<AppButtonProps> = ({ children, type = "", onClick, loading, style, ...rest }) => {
-  console.log(children)
+const AppButton: React.FC<AppButtonProps> = ({ children, type = "", onClick, loading, style }) => {
+  console.log(onClick)
   // Custom style for loading state
-  const loadingStyle: React.CSSProperties = {
-    ...style,
-    opacity: loading ? 0.5 : 1,
-    cursor: loading ? 'not-allowed' : 'pointer',
-  };
+  // const loadingStyle: React.CSSProperties = {
+  //   ...style,
+  //   opacity: loading ? 0.5 : 1,
+  //   cursor: loading ? 'not-allowed' : 'pointer',
+  // };
 
   switch (type) {
     case "loadingButton":
       return (
-        <Button 
-          onClick={loading ? undefined : onClick} 
-          style={loadingStyle} 
-          {...rest}
-          disabled={loading}
-        >
-          {loading ? 'Loading...' : children}
-        </Button>
+        <Button disabled>
+        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+        Please wait
+      </Button>
       );
     default:
       return (
         <Button 
           onClick={onClick} 
           style={style} 
-          {...rest}
         >
           {children}
         </Button>
