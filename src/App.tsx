@@ -7,6 +7,7 @@ import AppPopover from './Atoms/AppPopOver/AppPopover';
 import { Input } from './components/ui/input';
 import AppDragDropItems from './Molecules/AppDragDropItems';
 import AppDragDropItems2 from './Molecules/AppDragDropItems2';
+import AppDragDropItems3 from './Molecules/AppDragDropItems3';
 
 function App() {
   const [anchorEl, setAnchorEl] = useState<boolean>(false);
@@ -25,6 +26,7 @@ function App() {
         <div>Children</div>
         <Input type="text" placeholder="Search" onChange={(e)=>setSearch(e.target.value)}/>
         <AppDragDropItems2 />
+        {/* <AppDragDropItems3 /> */}
         <div className="flex justify-around mt-4"> 
         <Button variant="outline">Secondary</Button>
           <Button className="bg-blue-500 w-24">Save</Button>

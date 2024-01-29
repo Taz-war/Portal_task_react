@@ -1,62 +1,75 @@
 import { Checkbox } from '../components/ui/checkbox';
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react';
+// Import your Checkbox component as needed
 
 type SampleDataType = {
     id: number;
     name: string;
+    checked: boolean,
 };
 
 const AppDragDropItems2 = () => {
     const [sampleData, setSampleData] = useState<SampleDataType[]>([
-        { id: 1, name: 'General' },
-        { id: 2, name: 'Custom Modules(Leads)' }
+        { id: 1, name: 'General', checked: false },
+        { id: 2, name: 'Custom Modules(Leads)', checked: false },
     ]);
 
-    ///save reference for dragItem and dragOverItem////
-    const dragItem =React.useRef<any>(null)
-    const dragOverItem =React.useRef<any>(null)
+    const dragItem = useRef<number | null>(null);
+    const dragOverItem = useRef<number | null>(null);
 
-    const updateOrder = (dragOverIndex:number) => {
+    const updateOrder = (dragOverIndex: number) => {
+        if (dragItem.current === null || dragOverItem.current === null) return;
+
         const newSampleData = [...sampleData];
         const draggedItemContent = newSampleData.splice(dragItem.current, 1)[0];
         newSampleData.splice(dragOverIndex, 0, draggedItemContent);
+
+        dragItem.current = dragOverIndex; // Update the current drag item index
         setSampleData(newSampleData);
     };
 
-    // Function to handle drag start
-    const handleDragStart = (index:number) => {
+    const handleDragStart = (index: number) => {
         dragItem.current = index;
+        console.log(dragItem.current)
     };
 
-    // Function to handle drag enter
-    const handleDragEnter = (index:number) => {
-        if (dragOverItem.current !== index) {
-            dragOverItem.current = index;
+    const handleDragEnter = (index: number) => {
+
+        dragOverItem.current = index;
+        if (dragItem.current !== index) {
             updateOrder(index);
         }
     };
 
-    // Function to reset refs after drop
-    const handleSort = (index:number) => {
-        updateOrder(index)
+    const handleDragEnd = () => {
         dragItem.current = null;
         dragOverItem.current = null;
     };
 
+    const handleCheckboxChange = (id: number) => {
+        const newData = sampleData.map(item => {
+            if (item.id === id) {
+                return { ...item, checked: !item.checked };
+            }
+            return item;
+        }).sort((a, b) => (b.checked === a.checked) ? 0 : b.checked ? 1 : -1);
+
+        setSampleData(newData);
+    };
+
+
     return (
         <div>
             <div className="items-center space-x-2 my-4">
-                {sampleData.map(({ id, name }, index) => (
+                {sampleData.map(({ id, name, checked }, index) => (
                     <div key={id} className="flex items-center space-x-2 my-4 w-full ml-2 p-2 cursor-move" draggable
-                        onDragStart={() => handleDragStart(index)}
-                        onDragEnter={() => handleDragEnter(index)}
-                        onDragEnd={()=>handleSort(dragOverItem.current=index)}
+                        onDragStart={() => handleDragStart(index)} //1
+                        onDragEnter={() => handleDragEnter(index)} //0
+                        onDragEnd={handleDragEnd}
                         onDragOver={(e) => e.preventDefault()}
                     >
-                        {/* Uncomment if Checkbox is needed */}
-                        <Checkbox id={`checkbox-${id}`} className="cursor-move" />
+                        <Checkbox id={`checkbox-${id}`} className="accent-blue-700" onClick={() => handleCheckboxChange(id)} checked={checked} />
                         <label
-                            // htmlFor={`checkbox-${id}`}
                             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-move"
                         >
                             {name}
@@ -65,7 +78,7 @@ const AppDragDropItems2 = () => {
                 ))}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default AppDragDropItems2
+export default AppDragDropItems2;
