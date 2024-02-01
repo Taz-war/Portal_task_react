@@ -11,11 +11,12 @@ import AppDragDropItems3 from './Molecules/AppDragDropItems3';
 
 function App() {
   const [anchorEl, setAnchorEl] = useState<boolean>(false);
-  const [search, setSearch] = useState<null | string>(null);
+  const [search, setSearch] = useState<string>('');
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(true)
     // console.log('hello moto')
   }
+
 
   return (
     <div className="flex mx-auto items-center justify-center p-4">
@@ -23,9 +24,8 @@ function App() {
         Click me
       </AppButton>
       <AppPopover label='Popoveer'>
-        <div>Children</div>
         <Input type="text" placeholder="Search" onChange={(e)=>setSearch(e.target.value)}/>
-        <AppDragDropItems2 />
+        <AppDragDropItems2 search={search}/>
         {/* <AppDragDropItems3 /> */}
         <div className="flex justify-around mt-4"> 
         <Button variant="outline">Secondary</Button>

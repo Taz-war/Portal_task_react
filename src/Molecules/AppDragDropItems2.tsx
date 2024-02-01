@@ -8,7 +8,11 @@ type SampleDataType = {
     checked: boolean,
 };
 
-const AppDragDropItems2 = () => {
+type AppDragDropItems2Props = {
+    search: string;
+};
+
+const AppDragDropItems2 = ({search}:AppDragDropItems2Props) => {
     const [sampleData, setSampleData] = useState<SampleDataType[]>([
         { id: 1, name: 'General', checked: false },
         { id: 2, name: 'Custom Modules(Leads)', checked: false },
@@ -57,11 +61,15 @@ const AppDragDropItems2 = () => {
         setSampleData(newData);
     };
 
+    const filteredData = sampleData.filter(item => 
+        item.name.toLowerCase().includes(search)
+    );
+
 
     return (
         <div>
             <div className="items-center space-x-2 my-4">
-                {sampleData.map(({ id, name, checked }, index) => (
+                {filteredData.map(({ id, name, checked }, index) => (
                     <div key={id} className="flex items-center space-x-2 my-4 w-full ml-2 p-2 cursor-move" draggable
                         onDragStart={() => handleDragStart(index)} //1
                         onDragEnter={() => handleDragEnter(index)} //0
