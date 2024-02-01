@@ -10,13 +10,13 @@ type SampleDataType = {
 
 type AppDragDropItems2Props = {
     search: string;
+    data:SampleDataType[],
+    setData:React.Dispatch<React.SetStateAction<SampleDataType[]>>,
+    handleCheckboxChange: (id:number)=>void
 };
 
-const AppDragDropItems2 = ({search}:AppDragDropItems2Props) => {
-    const [sampleData, setSampleData] = useState<SampleDataType[]>([
-        { id: 1, name: 'General', checked: false },
-        { id: 2, name: 'Custom Modules(Leads)', checked: false },
-    ]);
+const AppDragDropItems2 = ({search,data,setData,handleCheckboxChange}:AppDragDropItems2Props) => {
+    
 
     const dragItem = useRef<number | null>(null);
     const dragOverItem = useRef<number | null>(null);
@@ -24,12 +24,11 @@ const AppDragDropItems2 = ({search}:AppDragDropItems2Props) => {
     const updateOrder = (dragOverIndex: number) => {
         if (dragItem.current === null || dragOverItem.current === null) return;
 
-        const newSampleData = [...sampleData];
+        const newSampleData = [...data];
         const draggedItemContent = newSampleData.splice(dragItem.current, 1)[0];
         newSampleData.splice(dragOverIndex, 0, draggedItemContent);
-
         dragItem.current = dragOverIndex; // Update the current drag item index
-        setSampleData(newSampleData);
+        setData(newSampleData);
     };
 
     const handleDragStart = (index: number) => {
@@ -50,18 +49,8 @@ const AppDragDropItems2 = ({search}:AppDragDropItems2Props) => {
         dragOverItem.current = null;
     };
 
-    const handleCheckboxChange = (id: number) => {
-        const newData = sampleData.map(item => {
-            if (item.id === id) {
-                return { ...item, checked: !item.checked };
-            }
-            return item;
-        }).sort((a, b) => (b.checked === a.checked) ? 0 : b.checked ? 1 : -1);
-
-        setSampleData(newData);
-    };
-
-    const filteredData = sampleData.filter(item => 
+    
+    const filteredData = data.filter(item => 
         item.name.toLowerCase().includes(search)
     );
 
