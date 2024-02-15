@@ -6,8 +6,9 @@ import AppButton from './Atoms/AppButton/AppButton';
 import AppPopover from './Atoms/AppPopOver/AppPopover';
 import { Input } from './components/ui/input';
 import AppDragDropItems from './Molecules/AppDragDropItems';
-import AppDragDropItems2 from './Molecules/AppDragDropItems2';
-import AppDragDropItems3 from './Molecules/AppDragDropItems3';
+import MultiSelectListBox from './Molecules/MultiSelectListBox';
+import ComboListBox from './Molecules/ComboListBox';
+import ListBox from './Molecules/ListBox';
 
 type SampleDataType = {
   id: number;
@@ -21,7 +22,7 @@ function App() {
   const [sampleData, setSampleData] = useState([
     { id: 1, name: 'General', checked: false },
     { id: 2, name: 'Custom Modules(Leads)', checked: false },
-]);
+  ]);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(true)
@@ -30,15 +31,15 @@ function App() {
 
   const handleCheckboxChange = (id: number) => {
     const newData = sampleData.map(item => {
-        if (item.id === id) {
-            return { ...item, checked: !item.checked };
-        }
-        return item;
+      if (item.id === id) {
+        return { ...item, checked: !item.checked };
+      }
+      return item;
     }).sort((a, b) => (b.checked === a.checked) ? 0 : b.checked ? 1 : -1);
 
     setSampleData(newData);
-};
-  
+  };
+
 
 
   return (
@@ -46,15 +47,20 @@ function App() {
       <AppButton onClick={handleClick} type='' style={{ backgroundColor: 'red' }}>
         Click me
       </AppButton>
-      <AppPopover label='Popoveer'>
-        <Input type="text" placeholder="Search" onChange={(e)=>setSearch(e.target.value)}/>
-        <AppDragDropItems2 search={search} data={sampleData} setData={setSampleData} handleCheckboxChange={handleCheckboxChange}/>
-        {/* <AppDragDropItems3 /> */}
-        <div className="flex justify-around mt-4"> 
-        <Button variant="outline">Secondary</Button>
-          <Button className="bg-blue-500 w-24">Save</Button>
+      <AppPopover label='Popoveer' >
+        <Input type="text" placeholder="Search" className=" w-60 h-8" onChange={(e) => setSearch(e.target.value)} />
+        <AppDragDropItems search={search} data={sampleData} setData={setSampleData} handleCheckboxChange={handleCheckboxChange} />
+
+        <div className="flex justify-end mt-2">
+          <Button variant="outline" className='mr-1 py-0 px-2 w-22 h-7'>Cancel</Button>
+          <Button className="bg-blue-500 py-0 px-2 w-22 h-7">Save</Button>
         </div>
       </AppPopover>
+      <br />
+      <br />
+      {/* <MultiSelectListBox /> */}
+      <ComboListBox />
+      <ListBox />
     </div>
   );
 }

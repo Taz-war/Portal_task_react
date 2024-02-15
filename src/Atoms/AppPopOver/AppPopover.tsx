@@ -5,18 +5,18 @@ import {
     PopoverTrigger,
 } from "../../components/ui/popover"
 
-type AppPopoverProps = { 
-    children: React.ReactNode, 
-    label: string 
+type AppPopoverProps = {
+    children: React.ReactNode,
+    label: string
 }
 
-const AppPopover = ({ children, label }:AppPopoverProps ) => {
+const AppPopover = ({ children, label }: AppPopoverProps) => {
     return (
-        <Popover>
+        <Popover >
             <PopoverTrigger asChild>
                 <Button variant="outline">{label}</Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80">
+            <PopoverContent className="w-64 pr-1">
                 {children}
             </PopoverContent>
         </Popover>
