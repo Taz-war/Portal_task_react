@@ -28,7 +28,7 @@ const MultiSelectListBox = () => {
   
     return (
       <div className="w-72">
-          {JSON.stringify(selectedFruits)}
+          {/* {JSON.stringify(selectedFruits)} */}
         <Listbox as="div">
           {({ open }) => (
             <>

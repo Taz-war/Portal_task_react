@@ -9,6 +9,7 @@ import AppDragDropItems from './Molecules/AppDragDropItems';
 import MultiSelectListBox from './Molecules/MultiSelectListBox';
 import ComboListBox from './Molecules/ComboListBox';
 import ListBox from './Molecules/ListBox';
+import MultiSelectComboBox from './Molecules/MultiSelectComboBox';
 
 type SampleDataType = {
   id: number;
@@ -60,6 +61,7 @@ function App() {
       <br />
       {/* <MultiSelectListBox /> */}
       <ComboListBox />
+      <MultiSelectComboBox />
       <ListBox />
     </div>
   );
