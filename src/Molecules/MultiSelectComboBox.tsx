@@ -39,14 +39,6 @@ const MultiSelectComboBox = () => {
             setLoading(false);
         }
         setIsOpen(!isOpen);
-        // setIsOpen(!isOpen);
-        // if (!isOpen && !loading) {
-        //     setLoading(true);
-        //     fetchPeople().then(fetchedPeople => {
-        //         setPeople(fetchedPeople);
-        //         setLoading(false);
-        //     });
-        // }
     };
 
     const filteredPeople: Person[] =
