@@ -10,6 +10,7 @@ import MultiSelectListBox from './Molecules/MultiSelectListBox';
 import ComboListBox from './Molecules/ComboListBox';
 import ListBox from './Molecules/ListBox';
 import MultiSelectComboBox from './Molecules/MultiSelectComboBox';
+import ShadcnComboBox from './Molecules/ShadcnComboBox';
 
 type SampleDataType = {
   id: number;
@@ -62,7 +63,8 @@ function App() {
       {/* <MultiSelectListBox /> */}
       <ComboListBox />
       <MultiSelectComboBox />
-      <ListBox />
+      {/* <ShadcnComboBox /> */}
+      {/* <ListBox /> */}
     </div>
   );
 }
