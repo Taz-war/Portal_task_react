@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 
 import { cn } from "../lib/utils";
@@ -21,7 +21,6 @@ type Framework = {
     label: string;
 };
 
-
 export function ShadcnComboBox() {
     const [open, setOpen] = useState(false);
     const [selectedValues, setSelectedValues] = useState<string[]>([]);
@@ -30,11 +29,30 @@ export function ShadcnComboBox() {
     const [moduleData, setModuleData] = useState<Framework[]>([]);
 
     useEffect(() => {
-        if (open) {
+        const fetchData = async () => {
             setLoading(true);
             // Simulate fetching data
+            try {
+                const data = await fetchModuleData();
+                setModuleData(data);
+            } catch (error) {
+                console.error("Error fetching module data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (open) {
+            fetchData();
+        }
+    }, [open]);
+
+    const fetchModuleData = async () => {
+        // Simulate fetching data
+        return new Promise<Framework[]>((resolve) => {
             setTimeout(() => {
-                setModuleData([
+                // Your data fetching logic
+                resolve([
                     { "label": "Campaigns", "value": "Campaigns" },
                     { "label": "Reports", "value": "Reports" },
                     { "label": "Analytics", "value": "Analytics" },
@@ -138,11 +156,10 @@ export function ShadcnComboBox() {
                     { "label": "Test Journey", "value": "Test_Journey" },
                     { "label": "Easy SMS Logs", "value": "Easy_SMS_Logs" },
                     { "label": "Email Extension Users", "value": "Email_Extension_Users" }
-                ]);
-                setLoading(false);
+                ]); // Data array
             }, 1000);
-        }
-    }, [open]);
+        });
+    };
 
     const toggleValue = (selectedValue: string) => {
         setSelectedValues((currentSelectedValues) =>
@@ -152,19 +169,20 @@ export function ShadcnComboBox() {
         );
     };
 
-    const selectedLabels = moduleData
-        .filter((framework) => selectedValues.includes(framework.value))
-        .map((framework) => framework.label)
-        .join(",")
+    const selectedLabels = useMemo(() => {
+        return moduleData
+            .filter((framework) => selectedValues.includes(framework.value))
+            .map((framework) => framework.label)
+            .join(",");
+    }, [selectedValues, moduleData]);
 
-    console.log('aha', { selectedLabels })
-
-    // Sort moduleData by selection status
-    const sortedmoduleData = [...moduleData].sort((a, b) => {
-        const isSelectedA = selectedValues.includes(a.value) ? -1 : 1;
-        const isSelectedB = selectedValues.includes(b.value) ? -1 : 1;
-        return isSelectedA - isSelectedB;
-    });
+    const sortedmoduleData = useMemo(() => {
+        return [...moduleData].sort((a, b) => {
+            const isSelectedA = selectedValues.includes(a.value) ? -1 : 1;
+            const isSelectedB = selectedValues.includes(b.value) ? -1 : 1;
+            return isSelectedA - isSelectedB;
+        });
+    }, [moduleData, selectedValues]);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -175,42 +193,15 @@ export function ShadcnComboBox() {
                     aria-expanded={open}
                     className="w-[300px] justify-between flex-wrap align-middle min-h-9 h-fit whitespace-nowrap "
                 >
-
-                    {selectedValues.length != 0 ? (
-                        selectedValues.map((item, index) => {
-                            return (
-                                <p key={index}>{item},</p>
-                            )
-                        })
-                    ) : "Select module data..."}
+                    {selectedValues.length !== 0 ? (
+                        selectedValues.map((item, index) => (
+                            <p key={index}>{item},</p>
+                        ))
+                    ) : (
+                        "Select module data..."
+                    )}
                     <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
-                {/* <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="relative w-[200px] p-1 border border-gray-300"
-                >
-                    <div className="flex items-center space-x-1 overflow-x-auto no-scrollbar">
-                        {selectedValues.map((value, index) => (
-                            <span key={value} className="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-semibold text-gray-700">
-                                {moduleData.find(f => f.value === value)?.label}
-                                {selectedValues.length - 1 !== index && ','} 
-                            </span>
-                        ))}
-                    </div>
-                    <CaretSortIcon className="absolute right-1 top-1 h-4 w-4 opacity-50" />
-                </Button> */}
-                {/**<Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="w-[200px] justify-between"
-                >
-                    {selectedLabels || "Select framework..."}
-                    <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button> */}
-
             </PopoverTrigger>
             <PopoverContent className="w-[300px] p-0 max-h-[300px] overflow-y-auto">
                 <Command>
@@ -253,7 +244,5 @@ export function ShadcnComboBox() {
         </Popover>
     );
 }
-
-
 
 export default ShadcnComboBox;
