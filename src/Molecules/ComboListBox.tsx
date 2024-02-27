@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
@@ -20,12 +20,18 @@ export default function ComboListBox() {
     const [selected, setSelected] = useState<Person | null>(null);
     const [query, setQuery] = useState<string>('');
 
-    const filteredPeople: Person[] =
-        query === ''
+    // Memoize filteredPeople to avoid recalculating on every render
+    const filteredPeople: Person[] = useMemo(() => {
+        return query === ''
             ? people
             : people.filter((person) =>
-                person.name.toLowerCase().includes(query.toLowerCase())
-            );
+                  person.name.toLowerCase().includes(query.toLowerCase())
+              );
+    }, [query]);
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(event.target.value);
+    };
 
     return (
         <div className="relative w-72">
@@ -34,7 +40,7 @@ export default function ComboListBox() {
                     <Combobox.Input
                         className="w-full border-gray-300 rounded-md bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                         displayValue={(person: Person) => person?.name ?? 'Select a fruit'}
-                        onChange={(event) => setQuery(event.target.value)}
+                        onChange={handleInputChange}
                         placeholder="Select a fruit"
                     />
                     <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">

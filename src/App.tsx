@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import { Button } from './components/ui/button';
@@ -19,6 +19,8 @@ type SampleDataType = {
   checked: boolean,
 };
 
+const AppButtonMemoized = React.memo(AppButton);
+
 function App() {
   const [anchorEl, setAnchorEl] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
@@ -27,21 +29,19 @@ function App() {
     { id: 2, name: 'Custom Modules(Leads)', checked: false },
   ]);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = () => {
     setAnchorEl(true)
     // console.log('hello moto')
   }
 
-  const handleCheckboxChange = (id: number) => {
-    const newData = sampleData.map(item => {
-      if (item.id === id) {
-        return { ...item, checked: !item.checked };
-      }
-      return item;
-    }).sort((a, b) => (b.checked === a.checked) ? 0 : b.checked ? 1 : -1);
 
-    setSampleData(newData);
-  };
+  const handleCheckboxChange = useCallback((id: number) => {
+    setSampleData((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, checked: !item.checked } : item
+      )
+    );
+  }, []);
 
 
 

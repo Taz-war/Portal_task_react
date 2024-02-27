@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect, memo, useCallback, useMemo } from 'react';
 import { Combobox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 
@@ -26,11 +26,10 @@ const fetchPeople = (): Promise<Person[]> => {
 const MultiSelectComboBox = () => {
     const [selectedPeople, setSelectedPeople] = useState<Person[]>([]);
     const [people, setPeople] = useState<Person[]>([]);
-    const [query, setQuery] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [query, setQuery] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
-    // Adjusted to keep the fetch inside the handleDropdownClick
     const handleDropdownClick = async () => {
         if (!isOpen && !loading) {
             setLoading(true);
@@ -41,27 +40,29 @@ const MultiSelectComboBox = () => {
         setIsOpen(!isOpen);
     };
 
-    const filteredPeople: Person[] =
-        query === ''
-            ? people
-            : people.filter((person) =>
-                person.name.toLowerCase().includes(query.toLowerCase())
-            );
+    const filteredPeople = useMemo(() => (
+        query === '' ? people : people.filter(person =>
+            person.name.toLowerCase().includes(query.toLowerCase()))
+    ), [people, query]);
 
-    const toggleSelection = (person: Person) => {
-        setSelectedPeople((currentSelected) => {
-            const isSelected = currentSelected.some((p) => p.id === person.id);
+    const toggleSelection = useCallback((person: Person) => {
+        setSelectedPeople(currentSelected => {
+            const isSelected = currentSelected.some(p => p.id === person.id);
             if (isSelected) {
-                return currentSelected.filter((p) => p.id !== person.id);
+                return currentSelected.filter(p => p.id !== person.id);
             } else {
                 return [...currentSelected, person];
             }
         });
-    };
+    }, []);
 
-    const removeSelectedPerson = (personId: number) => {
-        setSelectedPeople(selectedPeople.filter((p) => p.id !== personId));
-    };
+    const removeSelectedPerson = useCallback((personId: number) => {
+        setSelectedPeople(currentSelected => currentSelected.filter(p => p.id !== personId));
+    }, []);
+
+    const onInputChanged = useCallback((event:React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(event.target.value);
+    }, []);
 
     return (
         <div className="w-72">
@@ -79,7 +80,7 @@ const MultiSelectComboBox = () => {
                         <Combobox.Input
                             as="input" // Explicitly declare as an input for clarity
                             className="flex-1 w-32 outline-none flex-3 border-none focus:ring-0"
-                            onChange={(event) => setQuery(event.target.value)}
+                            onChange={onInputChanged}
                             placeholder={selectedPeople.length > 0 ? 'Search people...' : 'Select people'}
                         />
                     </div>
@@ -136,4 +137,4 @@ const MultiSelectComboBox = () => {
     );
 };
 
-export default MultiSelectComboBox;
+export default memo(MultiSelectComboBox);
